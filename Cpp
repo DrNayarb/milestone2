@@ -1,0 +1,100 @@
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+
+void identifyCode(int);
+void printArray(int[],int);
+
+int main()
+{
+	int washtableRow[4][4] = {{1,1,1,1}, //c1
+						  	  {1,-1,1,-1}, // c2 
+							  {1,1,-1,-1}, // c3
+							  {1,-1,-1,1}}; //c4
+	int const numOfStations = 4;
+	
+	//Bob is station 3 and alice is station 2
+	//station 1 : 0 
+	//Station 2: 1
+	//Station 3: 1
+	//station 4 : -1                  d1 d2 d3 d4
+	int stationsBit[numOfStations] = { 0,1,1,-1 };
+	
+	int message1[4];
+	int message2[4];
+	int message3[4];
+	int message4[4];
+	int j = 0;
+	for (int i = 0; i < numOfStations; i++) {
+		message1[i] = washtableRow[0][j] * stationsBit[0];
+		message2[i] = washtableRow[1][j] * stationsBit[1];
+		message3[i] = washtableRow[2][j]* stationsBit[2];
+		message4[i] = washtableRow[3][j] * stationsBit[3];
+		j++;
+	}
+	int combinedMessage[numOfStations];
+	for (int i = 0; i < numOfStations; i++) { combinedMessage[i] = (message1[i] + message2[i] + message3[i] + message4[i]); }
+	int aliceResult =0;
+	int bobResult = 0;
+
+
+//bob receiving alice bit 
+	for (int i = 0; i < numOfStations; i++) {
+		int temp;
+		temp = combinedMessage[i] * washtableRow[1][i];
+		aliceResult += temp;
+	}
+	for (int i = 0; i < numOfStations; i++) {
+		int temp;
+		temp = combinedMessage[i] * washtableRow[2][i];
+		bobResult += temp;
+	}
+	cout << "Alice Result:";
+	printArray(combinedMessage, numOfStations);
+	cout << " * ";
+	printArray(washtableRow[1], numOfStations);
+	cout << " = " << aliceResult << "/" << numOfStations << " = " << aliceResult / numOfStations << endl;
+	identifyCode(aliceResult / numOfStations);
+	cout << endl; cout << endl; 
+	// alice Receiving Bob's bit
+	cout << "Bob's Result:";
+	printArray(combinedMessage, numOfStations);
+	cout << " * ";
+	printArray(washtableRow[2], numOfStations);
+	cout << " = " << bobResult << "/" << numOfStations << " = " << bobResult / numOfStations << endl;
+	identifyCode(bobResult / numOfStations);
+
+	
+	
+}
+void identifyCode(int result) {
+	switch (result)
+	{
+	case -1:
+		cout << "Data bit 0" << endl;
+		break;
+	case 1:
+		cout << "Data bit 1" << endl;
+		break;
+	case 0:
+		cout << "Silence" << endl;
+		break;
+	default:
+		cout << "Error ocuured" << endl;
+		break;
+	}
+}
+void printArray(int arr[],int numOfel) {
+	cout << "[";
+	for (int i = 0; i < numOfel; i++) {
+		if (i != numOfel - 1) {
+			cout << arr[i] << ",";
+		}
+		else {
+			cout << arr[i];
+		}
+	}
+	cout << "]";
+}
